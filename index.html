@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="Product.js"></script>
+    <script src="ProductManage.js"></script>
+</head>
+<style>
+    form{
+        width: 400px;
+        margin-left: 20px;
+        display: inline-block;
+    }
+
+    input {
+        margin-bottom: 10px;
+    }
+</style>
+<body>
+    <form id="form-add" class="form-group">
+        <fieldset>
+            <legend>ADD PRODUCT</legend>
+            <input class="form-control" id="product-name" placeholder="Product Name">
+            <input class="form-control" id="product-price" placeholder="Product Price">
+            <input class="form-control" id="product-color" placeholder="Product Color">
+            <input class="form-control" id="product-desc" placeholder="Product Description">
+
+            <button type="button" class="btn btn-success" onclick="addProduct()">Add</button>
+        </fieldset>
+    </form>
+    <form id="form-edit" class="form-group" style="display: none">
+        <fieldset>
+            <legend>EDIT PRODUCT</legend>
+            <input class="form-control" id="edit-name" placeholder="Product Name">
+            <input class="form-control" id="edit-price" placeholder="Product Price">
+            <input class="form-control" id="edit-color" placeholder="Product Color">
+            <input class="form-control" id="edit-desc" placeholder="Product Description">
+
+            <button type="button" class="btn btn-success" onclick="editProduct()">Save</button>
+        </fieldset>
+    </form>
+    <div id="product-manage"></div>
+<script>
+    let store = new ProductManage("Cuong Store");
+    store.init();
+    display(store.getHtml());
+    console.log(store.products);
+    let currentProduct = 0;
+
+    function display(table) {
+        document.getElementById('product-manage').innerHTML = table;
+    }
+    function addProduct() {
+        let name = document.getElementById("product-name").value;
+        let price = document.getElementById("product-price").value;
+        let color = document.getElementById("product-color").value;
+        let desc = document.getElementById("product-desc").value;
+        let product = new Product(name,price,color,desc);
+
+        store.addProduct(product);
+        display(store.getHtml());
+        document.getElementById('form-add').reset();
+    }
+
+    function edit(index) {
+        document.getElementById('form-edit').style.display = "inline-block";
+        let product = store.getProductByIndex(index);
+        document.getElementById('edit-name').value = product.name;
+        document.getElementById('edit-price').value = product.price;
+        document.getElementById('edit-color').value = product.color;
+        document.getElementById('edit-desc').value = product.desc;
+        currentProduct = index;
+    }
+
+    function editProduct() {
+        let name = document.getElementById("edit-name").value;
+        let price = document.getElementById("edit-price").value;
+        let color = document.getElementById("edit-color").value;
+        let desc = document.getElementById("edit-desc").value;
+        store.products[currentProduct].edit(name,price,color,desc);
+        display(store.getHtml());
+        document.getElementById('form-edit').reset();
+        document.getElementById('form-edit').style.display = "none";
+    }
+
+    function del(index) {
+        store.deleteProduct(index);
+        display(store.getHtml());
+    }
+</script>
+</body>
+</html>
